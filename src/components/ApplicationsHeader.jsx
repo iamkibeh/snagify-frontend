@@ -2,7 +2,7 @@ import { AdjustmentsVerticalIcon, MagnifyingGlassIcon, PlusIcon } from '@heroico
 
 function ApplicationsHeader() {
   return (
-    <div className='flex p-4'>
+    <div className='flex py-4'>
       <section className='flex-grow'>
         <h1 className='text-lg font-medium text-primary'>Applications</h1>{' '}
       </section>
