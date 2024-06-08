@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'
 import { applications } from '../utils/constants'
 import {
   ChevronDoubleLeftIcon,
@@ -19,6 +20,17 @@ const TABLE_HEAD = [
 ]
 
 const ApplicationsTable = () => {
+  // const [applications, setApplications] = useState(applications)
+  // const [currentPage, setCurrentPage] = useState(1)
+  // const [rowsPerPage, setRowsPerPage] = useState(10)
+  // const [rows, setRows] = useState([])
+  // const [totalPages, setTotalPages] = useState(0)
+  // const [totalRows, setTotalRows] = useState(0)
+  // const [search, setSearch] = useState('')
+  // const [searchResults, setSearchResults] = useState([])
+
+  const navigate = useNavigate()
+
   const handleDelete = (id) => {
     console.log(id)
   }
@@ -29,6 +41,7 @@ const ApplicationsTable = () => {
 
   const handleRowClick = (id) => {
     console.log('The row with id: ' + id + ' is clicked')
+    navigate('/applications/' + id)
   }
 
   return (
