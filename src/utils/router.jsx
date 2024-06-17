@@ -4,6 +4,8 @@ import Layout from '../components/Layout'
 import ErrorPage from '../pages/ErrorPage'
 import Applications from '../pages/Applications'
 import ApplicationDetails from '../pages/ApplicationDetails'
+import Login from '../pages/Login'
+import Signup from '../pages/Signup'
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +25,13 @@ export const router = createBrowserRouter([
         path: '/applications/:id',
         element: <ApplicationDetails />,
       },
+      {
+        path: '/login',
+        element: <Login />,
+      },{
+        path: '/register',
+        element: <Signup />,
+      }
     ],
   },
 ])
