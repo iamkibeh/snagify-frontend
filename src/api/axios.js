@@ -15,3 +15,11 @@ export const axiosPrivate = axios.create({
     'Content-Type': 'application/json',
   },
 })
+
+export const api = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+})

@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import JobHuntSvg from '../components/JobHuntSvg'
 import useAxiosPrivate from '../hooks/useAxiosPrivate'
+import { api } from '../api/axios'
 
 
 const HomePage = () => {
   const [users, setUsers] = useState([])
-  const axiosPrivate = useAxiosPrivate()
+  // const axiosPrivate = useAxiosPrivate()
 
   const fetchUsers = async () => {
-    const response = await axiosPrivate.get('/users');
+    const response = await api.get('/users');
     console.log({response});
     setUsers(response.data);
   }
