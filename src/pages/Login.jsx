@@ -1,25 +1,41 @@
-import { useState } from 'react';
-import { NavLink } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
+import useAxiosPrivate from '../hooks/useAxiosPrivate'
 
 export default function Login() {
-    const [credentials, setCredentials] = useState({
-        email: '',
-        password: '',
-      });
+  const { login, loading, error, message, auth, setAuth } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from.pathname || '/'
+  const [credentials, setCredentials] = useState({
+    email: '',
+    password: '',
+  })
+  const axiosPrivate = useAxiosPrivate()
 
-    const handleChange = (e) => {
-        setCredentials({...credentials, [e.target.name]: e.target.value });
-    };
+  const handleChange = (e) => {
+    setCredentials({ ...credentials, [e.target.name]: e.target.value })
+  }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log(credentials);
-        setCredentials({
-            email: '',
-            password: '',
-        });
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    login(credentials)
+    setCredentials((creds) => ({
+      ...creds,
+      password: '',
+    }))
+    navigate(from, { replace: true })
+  }
 
+  useEffect(() => {
+    if (!auth.access_token) {
+      axiosPrivate.get('/users/me').then((res) => {
+        setAuth(res.data)
+        navigate(from, { replace: true })
+      })
+    }
+  }, [auth.access_token, axiosPrivate, from, navigate, setAuth])
   return (
     <div>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
@@ -85,12 +101,13 @@ export default function Login() {
               </div>
             </div>
 
+            {error && <p className='text-red-500 text-sm'>{message}</p>}
             <div>
               <button
                 type='submit'
-                className='bg-primary text-white px-4 py-2 font-bold rounded focus:outline-none focus:shadow-outline w-full'
+                className={`bg-primary text-white px-4 py-2 font-bold rounded focus:outline-none focus:shadow-outline w-full`}
               >
-                Sign in
+                {loading ? <div className='loader--lg'></div> : 'Sign in'}
               </button>
             </div>
           </form>

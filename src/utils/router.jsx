@@ -6,6 +6,7 @@ import Applications from '../pages/Applications'
 import ApplicationDetails from '../pages/ApplicationDetails'
 import Login from '../pages/Login'
 import Signup from '../pages/Signup'
+import ProtectedRoute from '../components/ProtectedRoute'
 
 export const router = createBrowserRouter([
   {
@@ -19,19 +20,27 @@ export const router = createBrowserRouter([
       },
       {
         path: '/applications',
-        element: <Applications />,
+        element: (
+          <ProtectedRoute>
+            <Applications />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/applications/:id',
-        element: <ApplicationDetails />,
+        element: 
+        <ProtectedRoute>
+          <ApplicationDetails />
+        </ProtectedRoute>
       },
       {
         path: '/login',
         element: <Login />,
-      },{
+      },
+      {
         path: '/register',
         element: <Signup />,
-      }
+      },
     ],
   },
 ])
