@@ -8,6 +8,11 @@ import {
   PencilIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline'
+import JobApplicationContext from '../context/JobApplicationProvider'
+import { useContext, useEffect, useState } from 'react'
+import { api } from '../api/axios'
+import ApplicationForm from '../reusables/ApplicationForm'
+import { Tooltip } from '@material-tailwind/react'
 
 const TABLE_HEAD = [
   'Company Name',
@@ -29,20 +34,45 @@ const ApplicationsTable = () => {
   // const [search, setSearch] = useState('')
   // const [searchResults, setSearchResults] = useState([])
 
-  const navigate = useNavigate()
+  const [jobApplicationModalOpen, setJobApplicationModalOpen] = useState(false)
+  const [applicationId, setApplicationId] = useState(null)
+  const handleJobApplicationModalOpen = (id) => {
+    setJobApplicationModalOpen(true)
+    setApplicationId(id)
+  }
 
+  const handleJobApplicationModalClose = () => {
+    setJobApplicationModalOpen(false)
+  }
+
+  const navigate = useNavigate()
+  const { jobApplications, setJobApplications } = useContext(
+    JobApplicationContext
+  )
+  const [isLoading, setIsLoading] = useState(false)
   const handleDelete = (id) => {
     console.log(id)
   }
 
   const handleEdit = (id) => {
     console.log(id)
+    handleJobApplicationModalOpen(id)
   }
 
   const handleRowClick = (id) => {
     console.log('The row with id: ' + id + ' is clicked')
     navigate('/applications/' + id)
   }
+
+  useEffect(() => {
+    setIsLoading(true)
+    api.get('/applications').then((res) => {
+      setJobApplications(res.data)
+      setIsLoading(false)
+    })
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -57,14 +87,15 @@ const ApplicationsTable = () => {
               ))}
             </tr>
           </thead>
+
           <tbody>
-            {applications.map(
+            {jobApplications.map(
               (
                 {
                   companyName,
                   jobTitle,
-                  applicationDate,
-                  currentStage,
+                  formattedApplicationDate,
+                  applicationStage,
                   location,
                   source,
                 },
@@ -85,32 +116,44 @@ const ApplicationsTable = () => {
                     <p>{location}</p>
                   </td>
                   <td className='p-4'>
-                    <p>{applicationDate}</p>
+                    <p>{formattedApplicationDate}</p>
                   </td>
                   <td className='px-4'>
                     <p className='bg-accent  text-[10px] w-fit py-1 px-2 rounded-2xl '>
                       {' '}
-                      {currentStage}
+                      {applicationStage}
                     </p>
                   </td>
                   <td className='p-4'>
                     <p>{source}</p>
                   </td>
                   <td className='p-4 flex justify-between items-center'>
-                    <PencilIcon
-                      className='w-3 h-3 text-primary'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleEdit(index)
-                      }}
-                    />
-                    <TrashIcon
-                      className='w-3 h-3 text-primary'
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDelete(index)
-                      }}
-                    />
+                    <Tooltip
+                      content='Edit'
+                      placement='bottom'
+                      className='bg-highlight text-primary py-1 text-xs'
+                    >
+                      <PencilIcon
+                        className='w-3 h-3 text-primary'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleEdit(index)
+                        }}
+                      />
+                    </Tooltip>
+                    <Tooltip
+                      content='Delete'
+                      placement='bottom'
+                      className='bg-highlight text-primary py-1 text-xs'
+                    >
+                      <TrashIcon
+                        className='w-3 h-3 text-primary'
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDelete(index)
+                        }}
+                      />
+                    </Tooltip>
                   </td>
                 </tr>
               )
@@ -158,6 +201,13 @@ const ApplicationsTable = () => {
           </div>
         </div>
       </section>
+
+      {jobApplicationModalOpen && (
+        <ApplicationForm
+          applicationId={applicationId}
+          closeModal={handleJobApplicationModalClose}
+        />
+      )}
     </>
   )
 }

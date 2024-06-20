@@ -22,6 +22,10 @@ export default withMT({
         accent: '#a0c7e4',
       },
     },
+    fontFamily: {
+      sans: ['Josefin Sans', 'sans-serif'],
+    },
   },
+
   plugins: [],
 })

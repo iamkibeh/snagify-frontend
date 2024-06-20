@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 const Signup = () => {
   const [userInfo, setUserInfo] = useState({
@@ -7,11 +8,12 @@ const Signup = () => {
     email: '',
     password: '',
   })
-
+  const { register, loading, error, message } = useAuth()
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     setUserInfo({
-     ...userInfo,
+      ...userInfo,
       [e.target.name]: e.target.value,
     })
   }
@@ -19,12 +21,13 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
     // Add your signup logic here
-    console.log(userInfo)
+    register(userInfo)
     setUserInfo({
       name: '',
       email: '',
       password: '',
     })
+    navigate("/login")
   }
 
   return (
@@ -47,17 +50,16 @@ const Signup = () => {
             >
               Name
             </label>
-                          <div className='mt-2'>
-
-            <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-secondary focus:shadow-outline'
-              id='name'
-              name='name'
-              type='text'
-              placeholder='Enter your name'
-              value={userInfo.name}
-              onChange={handleChange}
-            />
+            <div className='mt-2'>
+              <input
+                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-secondary focus:shadow-outline'
+                id='name'
+                name='name'
+                type='text'
+                placeholder='Enter your name'
+                value={userInfo.name}
+                onChange={handleChange}
+              />
             </div>
           </div>
           <div className='mb-4'>
@@ -67,17 +69,16 @@ const Signup = () => {
             >
               Email address
             </label>
-                          <div className='mt-2'>
-
-            <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-secondary focus:shadow-outline'
-              id='email'
-              name='email'
-              type='email'
-              placeholder='Enter your email'
-              value={userInfo.email}
-              onChange={handleChange}
-            />
+            <div className='mt-2'>
+              <input
+                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-secondary focus:shadow-outline'
+                id='email'
+                name='email'
+                type='email'
+                placeholder='Enter your email'
+                value={userInfo.email}
+                onChange={handleChange}
+              />
             </div>
           </div>
           <div className='mb-4'>
@@ -87,26 +88,48 @@ const Signup = () => {
             >
               Password
             </label>
-                          <div className='mt-2'>
-
-            <input
-              className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-secondary focus:shadow-outline'
-              name='password'
-              id='password'
-              type='password'
-              placeholder='Enter your password'
-              value={userInfo.password}
-              onChange={handleChange}
-            />
+            <div className='mt-2'>
+              <input
+                className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-secondary focus:shadow-outline'
+                name='password'
+                id='password'
+                type='password'
+                placeholder='Enter your password'
+                value={userInfo.password}
+                onChange={handleChange}
+              />
             </div>
           </div>
+          {error ? (
+            typeof message === 'object' ? (
+              message.map((message, ind) => (
+                <div className='text-red-500 text-center' key={ind}>
+                  {message.detail}
+                </div>
+              ))
+            ) : (
+              <div className='text-red-500 text-center'>
+                {message}
+              </div>
+            )
+          ) : null}
           <div className='flex items-center justify-between'>
-            <button
-              className='bg-primary text-white px-4 py-2 font-bold rounded focus:outline-none focus:shadow-outline w-full'
-              type='submit'
-            >
-              Sign Up
-            </button>
+            {loading ? (
+              <button
+                className='bg-primary text-white px-4 py-2 font-bold rounded focus:outline-none focus:shadow-outline w-full'
+                type='submit'
+                disabled
+              >
+                Loading...
+              </button>
+            ) : (
+              <button
+                className='bg-primary text-white px-4 py-2 font-bold rounded focus:outline-none focus:shadow-outline w-full'
+                type='submit'
+              >
+                Sign Up
+              </button>
+            )}
           </div>
         </form>
 

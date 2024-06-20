@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
 export default function Login() {
-  const { login, loading, error, message, auth } = useAuth()
+  const { login, loading, error, message } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from.pathname || '/'
@@ -12,7 +12,6 @@ export default function Login() {
     password: '',
   })
   const redirectMessage = new URLSearchParams(location.search).get('message')
-
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value })
@@ -28,22 +27,28 @@ export default function Login() {
     navigate(from, { replace: true })
   }
 
+  //  useEffect(() => {
+  //    if (auth?.access_token && location.pathname !== from) {
+  //      navigate(from, { replace: true })
+  //    }
+  //  // eslint-disable-next-line react-hooks/exhaustive-deps
+  //  }, [ from, navigate, location.pathname])
 
-  useEffect(()=>{
-    if (auth?.access_token) {
-      navigate(from, { replace: true })
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[auth])
+
   return (
     <div>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-        <div className="flex justify-center">
-            {redirectMessage === "expired" &&
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center w-fit " role="alert">
-                <strong className="font-bold">Your session has expired. Please login again.</strong>
+        <div className='flex justify-center'>
+          {redirectMessage === 'expired' && (
+            <div
+              className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative text-center w-fit '
+              role='alert'
+            >
+              <strong className='font-bold'>
+                Your session has expired. Please login again.
+              </strong>
             </div>
-            }
+          )}
         </div>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>

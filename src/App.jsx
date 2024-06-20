@@ -1,12 +1,13 @@
-import { RouterProvider } from "react-router-dom"
-import { router } from "./utils/router"
+import { RouterProvider } from 'react-router-dom'
+import { router } from './utils/router'
+import { JobApplicationProvider } from './context/JobApplicationProvider'
 
 function App() {
-  
-
   return (
     <>
-      <RouterProvider router={router} />
+      <JobApplicationProvider>
+        <RouterProvider router={router} />
+      </JobApplicationProvider>
     </>
   )
 }
