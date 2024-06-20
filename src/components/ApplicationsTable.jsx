@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import { applications } from '../utils/constants'
 import {
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
@@ -9,8 +8,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline'
 import JobApplicationContext from '../context/JobApplicationProvider'
-import { useContext, useEffect, useState } from 'react'
-import { api } from '../api/axios'
+import { useContext, useState } from 'react'
 import ApplicationForm from '../reusables/ApplicationForm'
 import { Tooltip } from '@material-tailwind/react'
 
@@ -36,6 +34,7 @@ const ApplicationsTable = () => {
 
   const [jobApplicationModalOpen, setJobApplicationModalOpen] = useState(false)
   const [applicationId, setApplicationId] = useState(null)
+  
   const handleJobApplicationModalOpen = (id) => {
     setJobApplicationModalOpen(true)
     setApplicationId(id)
@@ -49,7 +48,6 @@ const ApplicationsTable = () => {
   const { jobApplications, setJobApplications } = useContext(
     JobApplicationContext
   )
-  const [isLoading, setIsLoading] = useState(false)
   const handleDelete = (id) => {
     console.log(id)
   }
@@ -64,15 +62,17 @@ const ApplicationsTable = () => {
     navigate('/applications/' + id)
   }
 
-  useEffect(() => {
-    setIsLoading(true)
-    api.get('/applications').then((res) => {
-      setJobApplications(res.data)
-      setIsLoading(false)
-    })
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleUpdateApplication = (updatedApplication) => {
+    console.log({ updatedApplication });
+    const updatedApplications = jobApplications.map((application) =>
+      application.id === updatedApplication.id
+        ? updatedApplication
+        : application
+    )
+    setJobApplications(updatedApplications)
+    console.log("applications after change => ", {jobApplications})
+  }
 
   return (
     <>
@@ -92,6 +92,7 @@ const ApplicationsTable = () => {
             {jobApplications.map(
               (
                 {
+                  id,
                   companyName,
                   jobTitle,
                   formattedApplicationDate,
@@ -104,7 +105,7 @@ const ApplicationsTable = () => {
                 <tr
                   key={index}
                   className='even:bg-gray-100 cursor-pointer hover:bg-gray-300 transition-colors duration-1000'
-                  onClick={() => handleRowClick(index)}
+                  onClick={() => handleRowClick(id)}
                 >
                   <td className='p-4'>
                     <p>{companyName}</p>
@@ -137,7 +138,7 @@ const ApplicationsTable = () => {
                         className='w-3 h-3 text-primary'
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleEdit(index)
+                          handleEdit(id)
                         }}
                       />
                     </Tooltip>
@@ -150,7 +151,7 @@ const ApplicationsTable = () => {
                         className='w-3 h-3 text-primary'
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleDelete(index)
+                          handleDelete(id)
                         }}
                       />
                     </Tooltip>
@@ -206,6 +207,7 @@ const ApplicationsTable = () => {
         <ApplicationForm
           applicationId={applicationId}
           closeModal={handleJobApplicationModalClose}
+          onUpdateSuccess={handleUpdateApplication}
         />
       )}
     </>
