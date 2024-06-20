@@ -7,6 +7,7 @@ import ApplicationDetails from '../pages/ApplicationDetails'
 import Login from '../pages/Login'
 import Signup from '../pages/Signup'
 import ProtectedRoute from '../components/ProtectedRoute'
+import RedirectIfAuthenticated from '../components/RedirectIfAuthenticated'
 
 export const router = createBrowserRouter([
   {
@@ -28,14 +29,19 @@ export const router = createBrowserRouter([
       },
       {
         path: '/applications/:id',
-        element: 
-        <ProtectedRoute>
-          <ApplicationDetails />
-        </ProtectedRoute>
+        element: (
+          <ProtectedRoute>
+            <ApplicationDetails />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/login',
-        element: <Login />,
+        element: (
+          <RedirectIfAuthenticated>
+            <Login />
+          </RedirectIfAuthenticated>
+        ),
       },
       {
         path: '/register',

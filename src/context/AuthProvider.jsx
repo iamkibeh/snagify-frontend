@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         const originalRequest = error.config
 
         if (
-          (error.response.status === 401 || error.response.status === 403) &&
+          (error?.response?.status === 401 || error?.response?.status === 403) &&
           originalRequest.url !== '/auth/refresh-token'
         ) {
           try {
@@ -113,13 +113,23 @@ export const AuthProvider = ({ children }) => {
     setMessage(null)
   }
   const register = (user) => {
+    setLoading(true)
+    setError(false)
+    setSuccess(false)
     api
       .post('/auth/register', user)
       .then((res) => {
         setAuth(res.data)
+        setLoading(false)
+        setSuccess(true)
       })
       .catch((err) => {
-        console.log(err)
+        console.log({err})
+        setLoading(false)
+        setError(true)
+        err?.response?.data?.type === 'VALIDATION' ?
+        setMessage(err.response.data.errors) 
+        : setMessage(err.response.data.description)
       })
   }
 
