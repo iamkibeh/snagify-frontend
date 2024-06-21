@@ -9,13 +9,13 @@ import JobApplicationContext from '../context/JobApplicationProvider'
 
 function ApplicationsHeader() {
   const [jobApplicationModalOpen, setJobApplicationModalOpen] = useState(false)
-   const { jobApplications, setJobApplications } = useContext(
-     JobApplicationContext
-   )
+  const { jobApplications, setJobApplications } = useContext(
+    JobApplicationContext
+  )
 
-  const openJobApplicationModal = () => {
-    setJobApplicationModalOpen(true)
-  }
+  // const openJobApplicationModal = () => {
+  //   setJobApplicationModalOpen(true)
+  // }
 
   const closeJobApplicationModal = () => {
     setJobApplicationModalOpen(false)
@@ -52,7 +52,7 @@ function ApplicationsHeader() {
 
           <button
             className='flex gap-1 justify-between items-center button-8'
-            onClick={openJobApplicationModal}
+            onClick={() => setJobApplicationModalOpen(true)}
           >
             <PlusIcon className='w-4 h-4' />
             <span>Add Application</span>

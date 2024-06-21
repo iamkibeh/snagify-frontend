@@ -1,17 +1,16 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
-import { useLoading } from '../context/LoadingProvider'
-import Loader from '../reusables/Loader';
+import Loader from '../reusables/Loader'
+import useLoading from '../hooks/useLoading'
 
 function Layout() {
-  const {isLoading } = useLoading();
+  const { isLoading } = useLoading()
   return (
     <div>
       <Navbar />
       <div className='max-w-6xl m-auto text-sm'>
-        {isLoading && <Loader />}
-        {!isLoading && <Outlet />}
+        {isLoading ? <Loader /> : <Outlet />}
       </div>
       <Footer />
     </div>

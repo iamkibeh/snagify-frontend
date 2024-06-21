@@ -19,9 +19,12 @@ export const JobApplicationProvider = ({ children }) => {
 
 
    useEffect(() => {
+    console.log('================================');
+    console.log('useEffect running in job provider context : job applications= >', {jobApplications});
+    console.log('================================');
      setIsLoading(true)
      api
-       .get('/applications')
+       .get('/applications?currentUser=true')
        .then((res) => {
          setJobApplications(res.data)
          setIsSuccess(true)

@@ -1,18 +1,8 @@
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import JobHuntSvg from '../components/JobHuntSvg'
-import useAxiosPrivate from '../hooks/useAxiosPrivate'
-import { api } from '../api/axios'
-
 
 const HomePage = () => {
-  const [users, setUsers] = useState([])
-  // const axiosPrivate = useAxiosPrivate()
-
-  const fetchUsers = async () => {
-    const response = await api.get('/users');
-    console.log({response});
-    setUsers(response.data);
-  }
+  const navigate = useNavigate()
 
   return (
     <>
@@ -30,7 +20,11 @@ const HomePage = () => {
           </p>
           <button
             className='bg-primary text-white px-4 py-2 rounded'
-            onClick={()=>fetchUsers()}
+            onClick={() =>
+              navigate('/login', {
+                replace: true,
+              })
+            }
           >
             Get Started
           </button>
@@ -39,13 +33,6 @@ const HomePage = () => {
           <JobHuntSvg />
         </div>
       </div>
-      {users.map((user) => {
-        return (
-          <div key={user.id}>
-            <p>{user.email}</p>
-          </div>
-        )
-      })}
     </>
   )
 }

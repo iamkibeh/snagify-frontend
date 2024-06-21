@@ -1,11 +1,11 @@
-import ApplicationsHeader from "../components/ApplicationsHeader"
-import ApplicationsTable from "../components/ApplicationsTable"
+import ApplicationsHeader from '../components/ApplicationsHeader'
+import ApplicationsTable from '../components/ApplicationsTable'
 
 function Applications() {
   return (
     <div>
-        <ApplicationsHeader />
-        <ApplicationsTable />
+      <ApplicationsHeader />
+      <ApplicationsTable />
     </div>
   )
 }

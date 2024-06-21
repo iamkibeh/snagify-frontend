@@ -9,11 +9,11 @@ import { LoadingProvider } from './context/LoadingProvider.jsx'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ThemeProvider>
-      <AuthProvider>
-        <LoadingProvider>
-          <App />
-        </LoadingProvider>
-      </AuthProvider>
+        <AuthProvider>
+          <LoadingProvider>
+            <App />
+          </LoadingProvider>
+        </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>
 )

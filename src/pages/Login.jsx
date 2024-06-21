@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
 export default function Login() {
-  const { login, loading, error, message } = useAuth()
+  const { login, loading, error, message, auth } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from.pathname || '/'
@@ -24,7 +24,7 @@ export default function Login() {
       ...creds,
       password: '',
     }))
-    navigate(from, { replace: true })
+    auth && navigate(from, { replace: true })
   }
 
   //  useEffect(() => {
