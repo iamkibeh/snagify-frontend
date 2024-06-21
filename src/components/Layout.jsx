@@ -9,7 +9,7 @@ function Layout() {
   return (
     <div>
       <Navbar />
-      <div className='max-w-6xl m-auto text-sm'>
+      <div className='max-w-6xl m-auto text-sm min-h-[75vh]'>
         {isLoading ? <Loader /> : <Outlet />}
       </div>
       <Footer />

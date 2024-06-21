@@ -31,10 +31,11 @@ function NavTabs() {
           <BriefcaseIcon className='w-5 h-5 cursor-pointer' />
           <p>Applications</p>
         </NavLink>
+        {/* change the pointer event once feature is ready */}
         <NavLink
           to={'/todos'}
           className={({ isActive }) =>
-            `flex justify-center items-center gap-2 ${
+            `flex justify-center items-center gap-2 pointer-events-none ${
               isActive ? 'text-gray-900' : 'text-gray-500'
             }`
           }

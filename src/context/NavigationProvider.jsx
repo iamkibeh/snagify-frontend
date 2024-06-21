@@ -15,5 +15,5 @@ const NavigationProvider = ({ children }) => {
 export default NavigationProvider
 
 NavigationProvider.propTypes = {
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node,
 }

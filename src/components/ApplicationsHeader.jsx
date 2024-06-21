@@ -13,18 +13,13 @@ function ApplicationsHeader() {
     JobApplicationContext
   )
 
-  // const openJobApplicationModal = () => {
-  //   setJobApplicationModalOpen(true)
-  // }
 
   const closeJobApplicationModal = () => {
     setJobApplicationModalOpen(false)
   }
 
   const handleCreateApplication = (newApplication) => {
-    console.log({ newApplication })
     setJobApplications([newApplication, ...jobApplications])
-    console.log('applications after create => ', { jobApplications })
   }
 
   return (

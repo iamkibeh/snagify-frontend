@@ -29,7 +29,6 @@ const ApplicationForm = ({
   useEffect(() => {
     // Fetch application data
     if (applicationId === null) return
-    console.log('Fetching application data for application ' + applicationId)
     api
       .get(`/applications/${applicationId}`)
       .then((res) => {
@@ -60,7 +59,7 @@ const ApplicationForm = ({
   return (
     <>
       <div
-        className='fixed inset-0 bg-black opacity-75 flex items-center justify-center'
+        className='inset-0 bg-black opacity-75 flex items-center justify-center h-[100vh] absolute'
         onClick={() => closeModal()}
       ></div>
       <div className='bg-white p-8 rounded-xl shadow-md w-[60%] max-w-4xl min-w-[300px] h-[75%] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-auto z-50'>

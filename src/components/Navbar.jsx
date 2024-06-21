@@ -1,8 +1,10 @@
-import { BellIcon, ChevronDownIcon } from "@heroicons/react/24/outline"
-import { Avatar, Badge } from "@material-tailwind/react"
-import NavTabs from "./NavTabs"
+import { BellIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
+import { Avatar, Badge } from '@material-tailwind/react'
+import NavTabs from './NavTabs'
+import useAuth from '../hooks/useAuth'
 
 function Navbar() {
+  const { auth } = useAuth()
   return (
     <>
       <div className='p-4 flex justify-between shadow-custom 0px 1px 4px]'>
@@ -22,7 +24,7 @@ function Navbar() {
             />
           </div>
           <div className='flex justify-center items-center gap-1'>
-            <p className='text-xs'>John Doe</p>
+            <p className='text-xs'>{auth?.user ? auth?.user?.name : 'Guest'}</p>
             <ChevronDownIcon className='w-3 h-3 cursor-pointer' />
           </div>
         </div>
