@@ -13,7 +13,10 @@ const RedirectIfAuthenticated = ({ children }) => {
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      if (auth?.access_token) return
+      if (auth?.access_token){
+        setIsLoading(false)
+        return
+      }
       try {
         const res = await api.get('/users/me')
         setAuth((prev) => ({ ...prev, user: res.data }))

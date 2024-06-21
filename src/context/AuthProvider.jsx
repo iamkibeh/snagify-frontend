@@ -1,6 +1,7 @@
 import { createContext, useEffect, useLayoutEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { api } from '../api/axios'
+import { useAuthNavigate } from '../hooks/useAuthNavigate'
 
 const AuthContext = createContext(undefined)
 export const AuthProvider = ({ children }) => {
@@ -13,6 +14,7 @@ export const AuthProvider = ({ children }) => {
   const [success, setSuccess] = useState(false)
   const [message, setMessage] = useState(null)
 
+  const navigate = useAuthNavigate()
   useEffect(() => {
     const fetchLoggedInUser = async () => {
       try {
@@ -71,10 +73,9 @@ export const AuthProvider = ({ children }) => {
             .includes('refresh token expired')
         ) {
           // log message
-          console.log(' inside interceptor - > Refresh token expired')
           setAuth(null)
-          window.location.href = '/login?message=expired'
-          console.log('inside interceptor - > after navigate')
+          // window.location.href = '/login?message=expired'
+          navigate('/login?message=expired', { replace: true })
           return Promise.reject(error)
         }
         return Promise.reject(error)
