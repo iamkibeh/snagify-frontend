@@ -4,6 +4,8 @@ import { Option, Select } from '@material-tailwind/react'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { api } from '../api/axios'
+import ReactQuill, { Quill } from 'react-quill'
+import 'react-quill/dist/quill.snow.css'
 
 const ApplicationForm = ({
   closeModal,
@@ -11,6 +13,9 @@ const ApplicationForm = ({
   onUpdateSuccess = () => {},
   onCreateSuccess = () => {},
 }) => {
+  const font = Quill.import('formats/font')
+  font.whitelist = ['sans-serif', 'serif', 'monospace', 'Josefin Sans', 'inter']
+  Quill.register(font, true)
   const [applicationData, setApplicationData] = useState({})
   const {
     register,
@@ -178,16 +183,51 @@ const ApplicationForm = ({
           </div>
 
           <div className='mb-4'>
-            <label htmlFor='notes' className='block font-bold mb-2'>
-              Notes
+            <label htmlFor='jobDescription' className='block font-bold mb-2'>
+              Job Description
             </label>
-            <textarea
-              id='notes'
+            {/* <textarea
+              id='jobDescription'
               className='shadow border border-gray-300 rounded w-full px-3 py-2 text-gray-700 focus:outline-secondary focus:shadow-outline'
-              name='notes'
-              {...register('notes')}
-              placeholder='Enter notes here...'
-            ></textarea>
+              name='jobDescription'
+              {...register('jobDescription')}
+              placeholder='Enter job description here...'
+            ></textarea> */}
+
+            <Controller
+              name='jobDescription'
+              control={control}
+              render={({ field }) => (
+                <ReactQuill
+                  {...field}
+                  theme='snow'
+                  onChange={(content, delta, source, editor) =>
+                    field.onChange(editor.getHTML())
+                  }
+                  placeholder='Enter job description here...'
+                  modules={{
+                    toolbar: [
+                      [{ header: [1, 2, false] }],
+                      ['bold', 'italic', 'underline', 'blockquote'],
+                      [{ list: 'ordered' }, { list: 'bullet' }],
+                      ['link', 'image'],
+                    //   ['clean'],
+                      [
+                        {
+                          font: [
+                            // 'sans-serif',
+                            'serif',
+                            'inter',
+                            'monospace',
+                            'Josefin Sans',
+                          ],
+                        },
+                      ],
+                    ],
+                  }}
+                />
+              )}
+            />
           </div>
           <section className='flex justify-between items-center'>
             <button

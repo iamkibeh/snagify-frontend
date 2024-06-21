@@ -4,15 +4,43 @@ import {
   DocumentTextIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/24/outline'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { api } from '../api/axios'
+import Loader from '../reusables/Loader'
+import NoDataComponent from '../components/NoDataComponent'
+import DOMPurify from 'dompurify'
+import "../assets/css/jobDescription.css"
 
 function ApplicationDetails() {
   const navigate = useNavigate()
+  const [jobApplication, setJobApplication] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const params = useParams()
   const navigateBack = () => {
-    navigate(-1)
+    navigate('/applications')
   }
+
+  useEffect(() => {
+    api
+      .get(`/applications/${params.id}`)
+      .then((res) => {
+        setJobApplication(res.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+  }, [params.id])
+
+  if (isLoading) {
+    return <Loader />
+  }
+
   return (
-    <section className='container p-4'>
+    <section className='sm:container p-4 mx-auto'>
       <div
         className='flex items-center mb-4 cursor-pointer group'
         onClick={navigateBack}
@@ -25,7 +53,7 @@ function ApplicationDetails() {
           You applied to:
         </button>
         <button className='bg-transparent outline-1 outline-primary text-gray-900 font-semibold px-4 py-2 border-primary border'>
-          Company Name
+          {jobApplication?.companyName}
         </button>
       </div>
       <hr className='mt-4 border-2 border-gray-500' />
@@ -33,9 +61,13 @@ function ApplicationDetails() {
       <div className='my-4'>
         <div className=''>
           <p className='font-semibold text-2xl capitalize'>
-            Senior software Engineer
+            {/* Senior software Engineer */}
+            {jobApplication?.jobTitle}
           </p>
-          <p className='text-xs'>Nairobi - Kenya</p>
+          <p className='text-xs'>
+            {/* Nairobi - Kenya */}
+            {jobApplication?.location}
+          </p>
         </div>
       </div>
 
@@ -45,7 +77,7 @@ function ApplicationDetails() {
           <p className='text-gray- text-sm font-bold'>
             <span className='text-gray-500 font-semibold'>Current Stage:</span>
             <br />
-            Pending
+            {jobApplication?.applicationStage}
           </p>
         </div>
         <div className='flex items-center gap-4'>
@@ -56,7 +88,7 @@ function ApplicationDetails() {
                 Application Date:
               </span>
               <br />
-              12/12/2020
+              {jobApplication?.formattedApplicationDate}
             </p>
           </div>
         </div>
@@ -67,7 +99,7 @@ function ApplicationDetails() {
             <p className='text-gray- text-sm font-bold'>
               <span className='text-gray-500 font-semibold'>Source:</span>
               <br />
-              LinkedIn
+              {jobApplication?.source}
             </p>
           </div>
         </div>
@@ -76,29 +108,19 @@ function ApplicationDetails() {
       {/* job description section - as additional notes */}
 
       <div className='my-8'>
-        {/* <h2 className='font-semibold text-2xl capitalize'>Notes</h2> */}
-        <p className='font-bold text-lg'>What we are looking for</p>
-        <div className='mt-4'>
-          <p className=''>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
-          <ul className='list-disc pl-4'>
-            <li className=''>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </li>
-            <li className=''>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </li>
-          </ul>
-        </div>
+        {jobApplication?.jobDescription ? (
+          <>
+            <p className='font-bold text-lg mb-8'>Job Description</p>
+            <section
+              className='job-description-container'
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(jobApplication.jobDescription),
+              }}
+            ></section>
+          </>
+        ) : (
+          <NoDataComponent header={'Job Description unavailable'} />
+        )}
       </div>
     </section>
   )

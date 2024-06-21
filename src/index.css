@@ -92,3 +92,73 @@ input::placeholder {
   scrollbar-width: none;
   scrollbar-color: #888 #f1f1f1;
 }
+
+
+
+/* Heading styles */
+.job-description-container h3 {
+  font-size: 1.5rem; /* Example */
+  font-weight: bold; /* Example */
+}
+
+/* Paragraph styles */
+.job-description-container p {
+  font-size: 1rem; /* Example */
+  line-height: 1.5; /* Example */
+}
+
+/* List item styles */
+.job-description-container ul,
+.job-description-container ol {
+  margin-left: 1.5rem; /* Example */
+  
+}
+
+.job-description-container ul li,
+.job-description-container ol li {
+  font-size: 1rem; /* Example */
+  list-style-type: disc;
+}
+
+/* Bold text */
+.job-description-container strong {
+  font-weight: bold;
+}
+
+/* Italic text */
+.job-description-container em {
+  font-style: italic;
+}
+
+/* Underlined text */
+.job-description-container u {
+  text-decoration: underline;
+}
+
+/* Blockquote styles */
+.job-description-container blockquote {
+  margin: 0;
+  padding-left: 1rem; /* Example */
+  border-left: 4px solid #ccc; /* Example */
+}
+
+/* Font styles */
+.job-description-container .ql-font-sans-serif {
+  font-family: sans-serif; /* Example */
+}
+
+.job-description-container .ql-font-serif {
+  font-family: serif; /* Example */
+}
+
+.job-description-container .ql-font-inter {
+  font-family: Inter, sans-serif; /* Example */
+}
+
+.job-description-container .ql-font-monospace {
+  font-family: monospace; /* Example */
+}
+
+.job-description-container .ql-font-Josefin-Sans {
+  font-family: josefin-sans, sans-serif; /* Example */
+}
