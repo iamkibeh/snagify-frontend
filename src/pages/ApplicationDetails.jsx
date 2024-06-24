@@ -10,7 +10,7 @@ import { api } from '../api/axios'
 import Loader from '../reusables/Loader'
 import NoDataComponent from '../components/NoDataComponent'
 import DOMPurify from 'dompurify'
-import "../assets/css/jobDescription.css"
+import '../assets/css/jobDescription.css'
 
 function ApplicationDetails() {
   const navigate = useNavigate()
@@ -18,7 +18,7 @@ function ApplicationDetails() {
   const [isLoading, setIsLoading] = useState(true)
   const params = useParams()
   const navigateBack = () => {
-    navigate('/applications')
+    navigate(-1)
   }
 
   useEffect(() => {

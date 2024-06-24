@@ -1,7 +1,7 @@
 import { createContext, useEffect, useLayoutEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { api } from '../api/axios'
-import { useAuthNavigate } from '../hooks/useAuthNavigate'
+import history from '../utils/history'
 
 const AuthContext = createContext(undefined)
 export const AuthProvider = ({ children }) => {
@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
   const [success, setSuccess] = useState(false)
   const [message, setMessage] = useState(null)
 
-  const navigate = useAuthNavigate()
   useEffect(() => {
     const fetchLoggedInUser = async () => {
       try {
@@ -66,7 +65,7 @@ export const AuthProvider = ({ children }) => {
         // redirect users to login if we get response from backend that refresh token has expired
         if (
           window.location.pathname !== '/login' &&
-          error.response.status === 401 &&
+          error.response?.status === 401 &&
           error.response?.data?.message &&
           error.response?.data?.message
             .toLowerCase()
@@ -74,8 +73,13 @@ export const AuthProvider = ({ children }) => {
         ) {
           // log message
           setAuth(null)
-          // window.location.href = '/login?message=expired'
-          navigate('/login?message=expired', { replace: true })
+          history.push('/login?message=expired', { replace: true })
+          return Promise.reject(error)
+        }
+
+        if(error.code === "ERR_NETWORK"){
+          !localStorage.getItem('from') && localStorage.setItem('from', window.location.pathname)
+          history.push('/server-error')
           return Promise.reject(error)
         }
         return Promise.reject(error)

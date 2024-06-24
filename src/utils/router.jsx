@@ -8,6 +8,8 @@ import Login from '../pages/Login'
 import Signup from '../pages/Signup'
 import ProtectedRoute from '../components/ProtectedRoute'
 import RedirectIfAuthenticated from '../components/RedirectIfAuthenticated'
+import ServerErrorPage from '../pages/ServerErrorPage'
+import ApplicationSearch from '../pages/ApplicationSearch'
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +38,14 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        path: '/applications/search', // Add this route for search
+        element: (
+          <ProtectedRoute>
+            <ApplicationSearch />
+          </ProtectedRoute>
+        ),
+      },
+      {
         path: '/login',
         element: (
           <RedirectIfAuthenticated>
@@ -46,6 +56,14 @@ export const router = createBrowserRouter([
       {
         path: '/register',
         element: <Signup />,
+      },
+      {
+        path: '/*',
+        element: <ErrorPage />,
+      },
+      {
+        path: '/server-error',
+        element: <ServerErrorPage />,
       },
     ],
   },

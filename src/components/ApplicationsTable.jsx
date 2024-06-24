@@ -1,16 +1,12 @@
-import { useNavigate } from 'react-router-dom'
-import {
-  ChevronDoubleLeftIcon,
-  ChevronDoubleRightIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@heroicons/react/24/outline'
+import { useLocation, useNavigate } from 'react-router-dom'
 import JobApplicationContext from '../context/JobApplicationProvider'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import ApplicationForm from '../reusables/ApplicationForm'
 import NoDataComponent from './NoDataComponent'
 import DeleteConfirmationModal from '../reusables/DeleteConfirmationModal'
 import ApplicationRecordRow from '../reusables/ApplicationRecordRow'
+import Pagination from '../reusables/Pagination'
+import Loader from '../reusables/Loader'
 
 const TABLE_HEAD = [
   'Company Name',
@@ -23,23 +19,37 @@ const TABLE_HEAD = [
 ]
 
 const ApplicationsTable = () => {
-  // const [applications, setApplications] = useState(applications)
-  // const [currentPage, setCurrentPage] = useState(1)
-  // const [rowsPerPage, setRowsPerPage] = useState(10)
-  // const [rows, setRows] = useState([])
-  // const [totalPages, setTotalPages] = useState(0)
-  // const [totalRows, setTotalRows] = useState(0)
-  // const [search, setSearch] = useState('')
-  // const [searchResults, setSearchResults] = useState([])
-
   const navigate = useNavigate()
-  const { jobApplications, setJobApplications } = useContext(
-    JobApplicationContext
-  )
+  const location = useLocation()
+  const {
+    jobApplications,
+    fetchJobApplications,
+    isLoading,
+    isError,
+    currentPage,
+    rowsPerPage,
+    totalPages,
+    handlePageChange,
+    isPageLast,
+    handleRowsPerPageChange,
+    totalRecords,
+    // searchApplications
+  } = useContext(JobApplicationContext)
   const [jobApplicationModalOpen, setJobApplicationModalOpen] = useState(false)
   const [applicationId, setApplicationId] = useState(null)
   const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
     useState(false)
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search)
+    const query = queryParams.get('query')
+    if (query) {
+      // searchApplications(query);
+      return
+    }
+    fetchJobApplications(currentPage, rowsPerPage)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, rowsPerPage])
 
   const handleJobApplicationModalOpen = (id) => {
     setJobApplicationModalOpen(true)
@@ -50,14 +60,12 @@ const ApplicationsTable = () => {
     setJobApplicationModalOpen(false)
   }
 
-
   const handleDelete = (id) => {
-    setApplicationId(id);
+    setApplicationId(id)
     setIsDeleteConfirmationModalOpen(true)
   }
 
   const handleEdit = (id) => {
-    console.log(id)
     handleJobApplicationModalOpen(id)
   }
 
@@ -65,19 +73,22 @@ const ApplicationsTable = () => {
     navigate('/applications/' + id)
   }
 
-  const handleUpdateApplication = (updatedApplication) => {
-    const updatedApplications = jobApplications.map((application) =>
-      application.id === updatedApplication.id
-        ? updatedApplication
-        : application
-    )
-    setJobApplications(updatedApplications)
-  }
-
   if (jobApplications.length > 0) {
     return (
       <>
         <div>
+          {isLoading ? (
+            <div className='flex justify-center items-center h-full w-full'>
+              <div className='animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary'></div>
+            </div>
+          ) : null}
+          {isError ? (
+            <div className='flex justify-center items-center h-full w-full'>
+              <p className='text-red-500'>
+                Failed to load job applications. Something went wrong.
+              </p>
+            </div>
+          ) : null}
           <section className='h-full w-full overflow-x-auto rounded-xl'>
             <table className='w-full min-w-max table-auto text-left'>
               <thead>
@@ -93,72 +104,43 @@ const ApplicationsTable = () => {
               </thead>
 
               <tbody>
-                {jobApplications.map((application) => (
-                  <ApplicationRecordRow
-                    key={application.id}
-                    {...application}
-                    handleRowClick={handleRowClick}
-                    handleEdit={handleEdit}
-                    handleDelete={handleDelete}
-                    setIsDeleteConfirmationModalOpen={
-                      setIsDeleteConfirmationModalOpen
-                    }
-                  />
-                ))}
+                {!isLoading &&
+                  jobApplications.map((application) => (
+                    <ApplicationRecordRow
+                      key={application.id}
+                      {...application}
+                      handleRowClick={handleRowClick}
+                      handleEdit={handleEdit}
+                      handleDelete={handleDelete}
+                      setIsDeleteConfirmationModalOpen={
+                        setIsDeleteConfirmationModalOpen
+                      }
+                    />
+                  ))}
               </tbody>
             </table>
           </section>
 
           {/* Pagination Section */}
-          <section className='mt-6'>
-            <div className='flex justify-end items-center gap-3'>
-              <div className='flex gap-2 items-center'>
-                <p className='text-gray-500 text-xs'>Rows per page: </p>
-                <div className='flex gap-2'>
-                  <select className='border-none bg-gray-100 rounded-md px-2 py-1 focus:outline-none outline-none cursor-pointer'>
-                    <option>10</option>
-                    <option>20</option>
-                    <option>30</option>
-                    <option>40</option>
-                  </select>
-                </div>
-              </div>
-              <div className=''>
-                <p>
-                  <span className='text-gray-500 text-xs'>
-                    Showing 1-10 of 100 entries
-                  </span>
-                </p>
-              </div>
-              <div className='flex gap-2 items-center'>
-                {/* 4 arrows - first page, last page, next and previous pages */}
-                <div className='cursor-pointer hover:bg-gray-300 transition-colors duration-200 rounded-full p-2'>
-                  <ChevronDoubleLeftIcon className='w-4 h-4 text-primary' />
-                </div>
-
-                <div className='cursor-pointer hover:bg-gray-300 transition-colors duration-200 rounded-full p-2'>
-                  <ChevronLeftIcon className='w-4 h-4 text-primary ' />
-                </div>
-                <div className='cursor-pointer hover:bg-gray-300 transition-colors duration-200 rounded-full p-2'>
-                  <ChevronRightIcon className='w-4 h-4 text-primary cursor-pointer' />
-                </div>
-                <div className='cursor-pointer hover:bg-gray-300 transition-colors duration-200 rounded-full p-2'>
-                  <ChevronDoubleRightIcon className='w-4 h-4 text-primary cursor-pointer' />
-                </div>
-              </div>
-            </div>
-          </section>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            rowsPerPage={rowsPerPage}
+            totalRecords={totalRecords}
+            isPageLast={isPageLast}
+          />
         </div>
         {jobApplicationModalOpen && (
           <ApplicationForm
             applicationId={applicationId}
             closeModal={handleJobApplicationModalClose}
-            onUpdateSuccess={handleUpdateApplication}
           />
         )}
         {isDeleteConfirmationModalOpen && (
           <DeleteConfirmationModal
-            applicationId = {applicationId}
+            applicationId={applicationId}
             onClose={() => setIsDeleteConfirmationModalOpen(false)}
           />
         )}
@@ -168,10 +150,16 @@ const ApplicationsTable = () => {
 
   return (
     <>
-      <NoDataComponent
-        header='No Applications Found'
-        subHeader='There are currently no job applications to display.'
-      />
+      {isLoading ? (
+        <div className='flex justify-center items-center'>
+          <Loader />
+        </div>
+      ) : (
+        <NoDataComponent
+          header='No Applications Found'
+          subHeader='There are currently no job applications to display.'
+        />
+      )}
     </>
   )
 }

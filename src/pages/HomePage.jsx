@@ -1,9 +1,21 @@
 import { useNavigate } from 'react-router-dom'
 import JobHuntSvg from '../components/JobHuntSvg'
+import AuthContext from '../context/AuthProvider'
+import useAuth from '../hooks/useAuth'
 
 const HomePage = () => {
   const navigate = useNavigate()
+  const { auth } = useAuth(AuthContext)
 
+  const getStarted = () => {
+    if (auth) {
+      navigate('/applications')
+      return
+    }
+    navigate('/login', {
+      replace: true,
+    })
+  }
   return (
     <>
       <div className='p-4 flex'>
@@ -20,11 +32,7 @@ const HomePage = () => {
           </p>
           <button
             className='bg-primary text-white px-4 py-2 rounded'
-            onClick={() =>
-              navigate('/login', {
-                replace: true,
-              })
-            }
+            onClick={getStarted}
           >
             Get Started
           </button>

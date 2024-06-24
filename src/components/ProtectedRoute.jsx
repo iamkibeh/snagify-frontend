@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import useAuth from '../hooks/useAuth'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { api } from '../api/axios'
 import Loader from '../reusables/Loader'
@@ -9,6 +9,7 @@ const ProtectedRoute = ({ children }) => {
   const { auth, setAuth } = useAuth()
   const location = useLocation()
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     const checkAuthStatus = async () => {
@@ -20,7 +21,9 @@ const ProtectedRoute = ({ children }) => {
         const res = await api.get('/users/me')
         setAuth((prev) => ({ ...prev, user: res.data }))
       } catch (err) {
-        console.error(err)
+        if (err.code === 'ERR_NETWORK') {
+          navigate('/server-error')
+        }
         setAuth(null)
       } finally {
         setLoading(false)
@@ -30,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
     checkAuthStatus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  
+
   if (loading) {
     return (
       <>

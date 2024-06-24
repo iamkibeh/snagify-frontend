@@ -1,5 +1,5 @@
 // import { useAuth } from '../hooks/useAuth'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import useAuth from '../hooks/useAuth'
 import { useEffect, useState } from 'react'
@@ -9,11 +9,11 @@ import Loader from '../reusables/Loader'
 const RedirectIfAuthenticated = ({ children }) => {
   const { auth, setAuth } = useAuth()
   const location = useLocation()
-  const [isLoading, setIsLoading] =  useState(true);
-
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate()
   useEffect(() => {
     const checkAuthStatus = async () => {
-      if (auth?.access_token){
+      if (auth?.access_token) {
         setIsLoading(false)
         return
       }
@@ -21,9 +21,11 @@ const RedirectIfAuthenticated = ({ children }) => {
         const res = await api.get('/users/me')
         setAuth((prev) => ({ ...prev, user: res.data }))
       } catch (err) {
-        console.error(err)
+        if (err.code === 'ERR_NETWORK') {
+          navigate('/server-error')
+        }
         setAuth(null)
-      } finally{    
+      } finally {
         setIsLoading(false)
       }
     }
@@ -31,7 +33,6 @@ const RedirectIfAuthenticated = ({ children }) => {
     checkAuthStatus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.access_token, setAuth])
-
 
   if (isLoading) {
     return (
@@ -55,5 +56,5 @@ const RedirectIfAuthenticated = ({ children }) => {
 export default RedirectIfAuthenticated
 
 RedirectIfAuthenticated.propTypes = {
-    children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired,
 }
