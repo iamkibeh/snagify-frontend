@@ -2,6 +2,7 @@ import { BellIcon, ChevronDownIcon } from '@heroicons/react/24/outline'
 import { Avatar, Badge } from '@material-tailwind/react'
 import NavTabs from './NavTabs'
 import useAuth from '../hooks/useAuth'
+import UserProfileMenu from './UserProfileMenu'
 
 function Navbar() {
   const { auth } = useAuth()
@@ -17,11 +18,12 @@ function Navbar() {
             <BellIcon className='w-5 h-5  cursor-pointer' />
           </Badge>
           <div className=''>
-            <Avatar
+            {/* <Avatar
               src='https://docs.material-tailwind.com/img/face-2.jpg'
               alt='avatar'
               size='xs'
-            />
+            /> */}
+            <UserProfileMenu />
           </div>
           <div className='flex justify-center items-center gap-1'>
             <p className='text-xs'>{auth?.user ? auth?.user?.name : 'Guest'}</p>

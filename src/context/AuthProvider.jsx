@@ -44,7 +44,8 @@ export const AuthProvider = ({ children }) => {
         const originalRequest = error.config
 
         if (
-          (error?.response?.status === 401 || error?.response?.status === 403) &&
+          (error?.response?.status === 401 ||
+            error?.response?.status === 403) &&
           originalRequest.url !== '/auth/refresh-token'
         ) {
           try {
@@ -77,8 +78,9 @@ export const AuthProvider = ({ children }) => {
           return Promise.reject(error)
         }
 
-        if(error.code === "ERR_NETWORK"){
-          !localStorage.getItem('from') && localStorage.setItem('from', window.location.pathname)
+        if (error.code === 'ERR_NETWORK') {
+          !localStorage.getItem('from') &&
+            localStorage.setItem('from', window.location.pathname)
           history.push('/server-error')
           return Promise.reject(error)
         }
@@ -110,12 +112,19 @@ export const AuthProvider = ({ children }) => {
   }
 
   const logout = () => {
-    setAuth(null)
-    // Reset all states on logout
-    setLoading(false)
-    setError(false)
-    setSuccess(false)
-    setMessage(null)
+    api
+      .get('/logout')
+      .then(() => {
+        setAuth(null)
+      })
+      .finally(() => {
+        // Reset all states on logout
+        setLoading(false)
+        setError(false)
+        setSuccess(false)
+        setMessage(null)
+        window.location.pathname !== '/login' && window.location.reload()
+      })
   }
   const register = (user) => {
     setLoading(true)
@@ -129,12 +138,12 @@ export const AuthProvider = ({ children }) => {
         setSuccess(true)
       })
       .catch((err) => {
-        console.log({err})
+        console.log({ err })
         setLoading(false)
         setError(true)
-        err?.response?.data?.type === 'VALIDATION' ?
-        setMessage(err.response.data.errors) 
-        : setMessage(err.response.data.description)
+        err?.response?.data?.type === 'VALIDATION'
+          ? setMessage(err.response.data.errors)
+          : setMessage(err.response.data.description)
       })
   }
 
